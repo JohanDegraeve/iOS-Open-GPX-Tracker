@@ -165,11 +165,6 @@ class GPXFileTableInterfaceController: WKInterfaceController {
     override func willDisappear() {
     }
     
-    /// Closes this view controller.
-    @objc func closeGPXFilesTableViewController() {
-        print("closeGPXFIlesTableViewController()")
-    }
-    
     /// Loads data on the table
     func loadTableData() {
         fileTable.setNumberOfRows(fileList.count, withRowType: "GPXFile")

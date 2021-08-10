@@ -62,12 +62,12 @@ class GPXFilesTableViewController: UITableViewController, UINavigationBarDelegat
         addNotificationObservers()
         
         // Button to return to the map
-        let shareItem = UIBarButtonItem(title: NSLocalizedString("DONE", comment: "no comment"),
+        let addItem = UIBarButtonItem(title: NSLocalizedString("Add", comment: "no comment"),
                                         style: UIBarButtonItem.Style.plain,
                                         target: self,
-                                        action: #selector(GPXFilesTableViewController.closeGPXFilesTableViewController))
+                                        action: #selector(openAddGPXFileViewController))
         
-        self.navigationItem.rightBarButtonItems = [shareItem]
+        self.navigationItem.rightBarButtonItems = [addItem]
         
         // Get gpx files
         let list: [GPXFileInfo] = GPXFileManager.fileList
@@ -83,17 +83,17 @@ class GPXFilesTableViewController: UITableViewController, UINavigationBarDelegat
         removeNotificationObservers()
     }
     
-    /// Closes this view controller.
-    @objc func closeGPXFilesTableViewController() {
-        print("closeGPXFIlesTableViewController()")
-        self.dismiss(animated: true, completion: { () -> Void in
-        })
+    ///
+    /// Displays the view controller to load gpx file from url
+    ///
+    @objc func openAddGPXFileViewController() {
+        print("openAddGPXFileViewController")
+        let vc = AddGPXFileViewController(nibName: nil, bundle: nil)
+        vc.delegate = self
+        let navController = UINavigationController(rootViewController: vc)
+        self.present(navController, animated: true) { () -> Void in }
     }
-    
-   /// Reloads data whenver the table appears.
-    override func viewDidAppear(_ animated: Bool) {
-        self.tableView.reloadData()
-    }
+
     
     /// Disposes resources in case of a mermory warning.
     override func didReceiveMemoryWarning() {
@@ -322,6 +322,20 @@ class GPXFilesTableViewController: UITableViewController, UINavigationBarDelegat
     }
     
 }
+
+// MARK: - comply to AddGPXFileViewControllerDelegate
+
+extension GPXFilesTableViewController: AddGPXFileViewControllerDelegate {
+    
+    func finishedLoadingGPXFile() {
+        
+        reloadTableData()
+        
+    }
+    
+}
+
+// MARK: - why are these functions in an extension ?
 
 ///
 /// Handles reloading of table view when file is added while user is still in current view.

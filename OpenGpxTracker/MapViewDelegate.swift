@@ -53,11 +53,11 @@ class MapViewDelegate: NSObject, MKMapViewDelegate, UIAlertViewDelegate {
                 pr.shouldRasterize = true
                 if mapView.traitCollection.userInterfaceStyle == .dark {
                     pr.alpha = 0.5
-                    pr.strokeColor = UIColor.yellow
+                    pr.strokeColor = UIColor.blue
                 }
             }
             
-            pr.lineWidth = 3
+            pr.lineWidth = 10
             return pr
         }
         return MKOverlayRenderer()

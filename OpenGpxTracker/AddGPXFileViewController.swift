@@ -12,16 +12,40 @@ fileprivate let tableViewCellReuseIdentifier = "LoadFileCell"
 
 fileprivate let text_labelWithExplanation = "give URL to download GPX file"
 
+fileprivate let userDefaultsKeyForUrlEnteredByUser = "urlEnteredByUser"
+
+fileprivate let userDefaultsKeyForFilenameEnteredByUser = "filenameEnteredByUser"
+
+fileprivate let defaults = UserDefaults.standard
+
 class AddGPXFileViewController: UITableViewController, UITextFieldDelegate {
+    
+    
     
     /// text field for user to key in url where gpx can be downloaded
     var urlTextField = UITextField()
 
     /// temp storage for url (domain + path)
-    var urlEnteredByUser = ""
+    var urlEnteredByUser = defaults.string(forKey: userDefaultsKeyForUrlEnteredByUser) ?? "" {
+        
+        didSet {
+        
+            defaults.setValue(urlEnteredByUser, forKey: userDefaultsKeyForUrlEnteredByUser)
+            
+        }
+        
+    }
     
     /// temp storage for filename (gpx extension)
-    var filenameEnteredByUser = ""
+    var filenameEnteredByUser = defaults.string(forKey: userDefaultsKeyForFilenameEnteredByUser) ?? "" {
+        
+        didSet {
+            
+            defaults.setValue(filenameEnteredByUser, forKey: userDefaultsKeyForFilenameEnteredByUser)
+            
+        }
+        
+    }
 
     /// AddGPXFileViewControllerDelegate
     weak var delegate: AddGPXFileViewControllerDelegate?
@@ -221,7 +245,7 @@ class AddGPXFileViewController: UITableViewController, UITextFieldDelegate {
         
         if (!newUrl.starts(with: "http") && !newUrl.starts(with: "https")) {
             
-            newUrl = newUrl + "https://"
+            newUrl = "https://" + newUrl
             
         }
         

@@ -72,6 +72,10 @@ let kSignalAccuracy2 = 101.0
 /// Upper limits threshold (in meters) on signal accuracy.
 let kSignalAccuracy1 = 201.0
 
+/// - if false then don't show the buttons to start and stop tracking etc.
+/// - maybe in future this can be stored in preferences, then app could be used for tracking or following
+fileprivate let usedForTracking = false
+
 ///
 /// Main View Controller of the Application. It is loaded when the application is launched
 ///
@@ -483,6 +487,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         // Tracked info
         let iPhoneXdiff: CGFloat  = isIPhoneX ? 40 : 0
+
         //timeLabel
         timeLabel.textAlignment = .right
         timeLabel.font = font36
@@ -491,7 +496,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         //timeLabel.shadowOffset = CGSize(width: 1, height: 1)
         //timeLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
         map.addSubview(timeLabel)
-        
+
         //speed Label
         speedLabel.textAlignment = .right
         speedLabel.font = font18
@@ -508,13 +513,18 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         //timeLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
         map.addSubview(totalTrackedDistanceLabel)
         
-        currentSegmentDistanceLabel.textAlignment = .right
-        currentSegmentDistanceLabel.font = font18
-        currentSegmentDistanceLabel.useImperial = useImperial
-        currentSegmentDistanceLabel.distance = 0.00
-        currentSegmentDistanceLabel.autoresizingMask = [.flexibleWidth, .flexibleLeftMargin, .flexibleRightMargin]
-        //timeLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
-        map.addSubview(currentSegmentDistanceLabel)
+        
+        if usedForTracking {
+
+            currentSegmentDistanceLabel.textAlignment = .right
+            currentSegmentDistanceLabel.font = font18
+            currentSegmentDistanceLabel.useImperial = useImperial
+            currentSegmentDistanceLabel.distance = 0.00
+            currentSegmentDistanceLabel.autoresizingMask = [.flexibleWidth, .flexibleLeftMargin, .flexibleRightMargin]
+            //timeLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
+            map.addSubview(currentSegmentDistanceLabel)
+
+        }
         
         //about button
         aboutButton.frame = CGRect(x: 5 + 8, y: 14 + 5 + 48 + 5 + iPhoneXdiff, width: 32, height: 32)
@@ -589,54 +599,58 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         // [-----------------------|--------------------------]
         //                  map.frame/2 (center)
 
-        // Start/Pause button
-        trackerButton.layer.cornerRadius = kButtonLargeSize/2
-        trackerButton.setTitle(NSLocalizedString("START_TRACKING", comment: "no comment"), for: UIControl.State())
-        trackerButton.backgroundColor = kGreenButtonBackgroundColor
-        trackerButton.addTarget(self, action: #selector(ViewController.trackerButtonTapped), for: .touchUpInside)
-        trackerButton.isHidden = false
-        trackerButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        trackerButton.titleLabel?.numberOfLines = 2
-        trackerButton.titleLabel?.textAlignment = .center
-        map.addSubview(trackerButton)
-        
-        // Pin Button (on the left of start)
-        newPinButton.layer.cornerRadius = kButtonSmallSize/2
-        newPinButton.backgroundColor = kWhiteBackgroundColor
-        newPinButton.setImage(UIImage(named: "addPin"), for: UIControl.State())
-        newPinButton.setImage(UIImage(named: "addPinHigh"), for: .highlighted)
-        newPinButton.addTarget(self, action: #selector(ViewController.addPinAtMyLocation), for: .touchUpInside)
-        map.addSubview(newPinButton)
-        
-        // Follow user button
-        followUserButton.layer.cornerRadius = kButtonSmallSize/2
-        followUserButton.backgroundColor = kWhiteBackgroundColor
-        //follow_user_high represents the user is being followed. Default status when app starts
-        followUserButton.setImage(UIImage(named: "follow_user_high"), for: UIControl.State())
-        followUserButton.setImage(UIImage(named: "follow_user_high"), for: .highlighted)
-        followUserButton.addTarget(self, action: #selector(ViewController.followButtonTroggler), for: .touchUpInside)
-        map.addSubview(followUserButton)
-        
-        // Save button
-        saveButton.layer.cornerRadius = kButtonSmallSize/2
-        saveButton.setTitle(NSLocalizedString("SAVE", comment: "no comment"), for: UIControl.State())
-        saveButton.backgroundColor = kDisabledBlueButtonBackgroundColor
-        saveButton.addTarget(self, action: #selector(ViewController.saveButtonTapped), for: .touchUpInside)
-        saveButton.isHidden = false
-        saveButton.titleLabel?.textAlignment = .center
-        saveButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        map.addSubview(saveButton)
-        
-        // Reset button
-        resetButton.layer.cornerRadius = kButtonSmallSize/2
-        resetButton.setTitle(NSLocalizedString("RESET", comment: "no comment"), for: UIControl.State())
-        resetButton.backgroundColor = kDisabledRedButtonBackgroundColor
-        resetButton.addTarget(self, action: #selector(ViewController.resetButtonTapped), for: .touchUpInside)
-        resetButton.isHidden = false
-        resetButton.titleLabel?.textAlignment = .center
-        resetButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        map.addSubview(resetButton)
-        
+        if (usedForTracking) {
+
+            // Start/Pause button
+            trackerButton.layer.cornerRadius = kButtonLargeSize/2
+            trackerButton.setTitle(NSLocalizedString("START_TRACKING", comment: "no comment"), for: UIControl.State())
+            trackerButton.backgroundColor = kGreenButtonBackgroundColor
+            trackerButton.addTarget(self, action: #selector(ViewController.trackerButtonTapped), for: .touchUpInside)
+            trackerButton.isHidden = false
+            trackerButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+            trackerButton.titleLabel?.numberOfLines = 2
+            trackerButton.titleLabel?.textAlignment = .center
+            map.addSubview(trackerButton)
+            
+            // Pin Button (on the left of start)
+            newPinButton.layer.cornerRadius = kButtonSmallSize/2
+            newPinButton.backgroundColor = kWhiteBackgroundColor
+            newPinButton.setImage(UIImage(named: "addPin"), for: UIControl.State())
+            newPinButton.setImage(UIImage(named: "addPinHigh"), for: .highlighted)
+            newPinButton.addTarget(self, action: #selector(ViewController.addPinAtMyLocation), for: .touchUpInside)
+            map.addSubview(newPinButton)
+            
+            // Follow user button
+            followUserButton.layer.cornerRadius = kButtonSmallSize/2
+            followUserButton.backgroundColor = kWhiteBackgroundColor
+            //follow_user_high represents the user is being followed. Default status when app starts
+            followUserButton.setImage(UIImage(named: "follow_user_high"), for: UIControl.State())
+            followUserButton.setImage(UIImage(named: "follow_user_high"), for: .highlighted)
+            followUserButton.addTarget(self, action: #selector(ViewController.followButtonTroggler), for: .touchUpInside)
+            map.addSubview(followUserButton)
+            
+            // Save button
+            saveButton.layer.cornerRadius = kButtonSmallSize/2
+            saveButton.setTitle(NSLocalizedString("SAVE", comment: "no comment"), for: UIControl.State())
+            saveButton.backgroundColor = kDisabledBlueButtonBackgroundColor
+            saveButton.addTarget(self, action: #selector(ViewController.saveButtonTapped), for: .touchUpInside)
+            saveButton.isHidden = false
+            saveButton.titleLabel?.textAlignment = .center
+            saveButton.titleLabel?.adjustsFontSizeToFitWidth = true
+            map.addSubview(saveButton)
+            
+            // Reset button
+            resetButton.layer.cornerRadius = kButtonSmallSize/2
+            resetButton.setTitle(NSLocalizedString("RESET", comment: "no comment"), for: UIControl.State())
+            resetButton.backgroundColor = kDisabledRedButtonBackgroundColor
+            resetButton.addTarget(self, action: #selector(ViewController.resetButtonTapped), for: .touchUpInside)
+            resetButton.isHidden = false
+            resetButton.titleLabel?.textAlignment = .center
+            resetButton.titleLabel?.adjustsFontSizeToFitWidth = true
+            map.addSubview(resetButton)
+            
+
+        }
         addConstraints(isIPhoneX)
         
         map.rotationGesture.delegate = self
@@ -702,14 +716,21 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         NSLayoutConstraint(item: totalTrackedDistanceLabel, attribute: .leading, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: kSignalViewOffset).isActive = true
         NSLayoutConstraint(item: totalTrackedDistanceLabel, attribute: .top, relatedBy: .equal, toItem: speedLabel, attribute: .bottom, multiplier: 1, constant: 5).isActive = true
         
-        NSLayoutConstraint(item: currentSegmentDistanceLabel, attribute: .trailing, relatedBy: .equal, toItem: self.view, attribute: .trailing, multiplier: 1, constant: -7).isActive = true
-        NSLayoutConstraint(item: currentSegmentDistanceLabel, attribute: .leading, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: kSignalViewOffset).isActive = true
-        NSLayoutConstraint(item: currentSegmentDistanceLabel, attribute: .top, relatedBy: .equal, toItem: totalTrackedDistanceLabel, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
+        if (usedForTracking) {
+
+            NSLayoutConstraint(item: currentSegmentDistanceLabel, attribute: .trailing, relatedBy: .equal, toItem: self.view, attribute: .trailing, multiplier: 1, constant: -7).isActive = true
+            NSLayoutConstraint(item: currentSegmentDistanceLabel, attribute: .leading, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: kSignalViewOffset).isActive = true
+            NSLayoutConstraint(item: currentSegmentDistanceLabel, attribute: .top, relatedBy: .equal, toItem: totalTrackedDistanceLabel, attribute: .bottom, multiplier: 1, constant: 0).isActive = true
+
+        }
 
     }
     
     /// Adds constraints to subviews forming the button bar (bottom session controls bar)
     func addConstraintsToButtonBar(_ isIPhoneX: Bool) {
+        
+        if !usedForTracking {return}
+        
         // MARK: Button Bar
         
         // constants
@@ -1024,6 +1045,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     /// If user long presses the map for a while a Pin (Waypoint/Annotation) will be dropped at that point.
     ///
     @objc func addPinAtTappedLocation(_ gesture: UILongPressGestureRecognizer) {
+        
+        if (!usedForTracking) {return}
+        
         if  gesture.state == UIGestureRecognizer.State.began {
             print("Adding Pin map Long Press Gesture")
             let point: CGPoint = gesture.location(in: self.map)

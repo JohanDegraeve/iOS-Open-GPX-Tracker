@@ -17,14 +17,11 @@ class AddGPXFileViewController: UITableViewController, UITextFieldDelegate {
     /// text field for user to key in url where gpx can be downloaded
     var urlTextField = UITextField()
 
-    /// text to explain what to enter in urlTextField
-    var explanationLabel = UILabel()
-    
     /// temp storage for url (domain + path)
-    var urlEnteredByUser = "https://www.karatesint-niklaas.be"
+    var urlEnteredByUser = ""
     
     /// temp storage for filename (gpx extension)
-    var filenameEnteredByUser = "rr.gpx"
+    var filenameEnteredByUser = ""
 
     /// AddGPXFileViewControllerDelegate
     weak var delegate: AddGPXFileViewControllerDelegate?
@@ -33,7 +30,7 @@ class AddGPXFileViewController: UITableViewController, UITextFieldDelegate {
         
         super.viewDidLoad()
         
-        self.title = "Add file"
+        self.title = "Download file"
         
     }
     
